@@ -1,8 +1,6 @@
-from django.conf import settings
 from django.contrib import admin
+from django.conf import settings
 from django_mptt_admin.admin import DjangoMpttAdmin
-
-from .forms import page_admin_form
 from .models import Page
 
 
@@ -26,7 +24,11 @@ class PageAdmin(DjangoMpttAdmin):
                       (('login_required',) if SHOW_LOGIN_REQUIRED else ()),
         }),
     )
-    list_display = ('url', 'title') + (('login_required',) if SHOW_LOGIN_REQUIRED else ())
+    list_display = ('url', 'title')
     list_filter = ('published',) + (('login_required',) if SHOW_LOGIN_REQUIRED else ())
     search_fields = ('url', 'title')
-    form = page_admin_form()
+    
+
+
+
+

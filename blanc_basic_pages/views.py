@@ -3,8 +3,8 @@ from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader, RequestContext
 from django.views.decorators.csrf import csrf_protect
-
 from .models import Page
+from . import get_page_model
 
 
 DEFAULT_TEMPLATE = 'pages/default.html'
@@ -13,13 +13,14 @@ DEFAULT_TEMPLATE = 'pages/default.html'
 def page(request, url):
     if not url.startswith('/'):
         url = '/' + url
-
+    
     try:
-        obj = get_object_or_404(Page, url=url, published=True)
+        page_cls = get_page_model()
+        obj = get_object_or_404(page_cls, url=url, published=True)
     except Http404:
         if not url.endswith('/') and settings.APPEND_SLASH:
             url += '/'
-            obj = get_object_or_404(Page, url=url, published=True)
+            obj = get_object_or_404(page_cls, url=url, published=True)
             return HttpResponsePermanentRedirect('%s/' % request.path)
         else:
             raise
@@ -43,3 +44,6 @@ def render_page(request, obj):
     })
     response = HttpResponse(t.render(c))
     return response
+    
+def lazy_page(request):
+    return page(request, request.path_info)
