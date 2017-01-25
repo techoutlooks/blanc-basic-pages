@@ -1,5 +1,5 @@
 from django import template
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils import six
 from blanc_basic_pages import get_page_model
 
@@ -16,6 +16,8 @@ def get_root_pages(current_page=None):
             current_page = get_page_model().objects.get(url=reverse(current_page))
         except get_page_model().DoesNotExist:
             current_page = None
+        except NoReverseMatch:
+            current_page = None    
 
     page_list = []
 
